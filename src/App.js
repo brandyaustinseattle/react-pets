@@ -1,31 +1,36 @@
-// Chef, Indeed, Amazon Kubernetes, Hulu, Amazon Subscription Boxes, Nordstrom
-
 import React, { Component } from 'react';
 import './App.css';
 import PetCollection from './components/PetCollection';
+import Status from './components/Status';
 
 class App extends Component {
-  render() {
+  constructor() {
+    super();
 
-    const petData = [
-      {
-        name: 'Jerome',
-        breed: 'Pitbull',
-        age: 3,
-        about: 'Sweet and lovely'
-      },
-      {
-        name: 'Stanley',
-        breed: 'Cat',
-        age: 11,
-        about: 'Aged intelligence'
+    this.state = {
+      status: {
+        message: 'loaded the page',
+        type: 'success'
       }
-    ];
+    }
+  }
+
+  updateStatus = (message, type) => {
+    this.setState({
+      status: {
+        message: message,
+        type: type
+      }
+    })
+  }
+
+  render() {
 
     return (
 
       <div className="App">
-        <PetCollection data={petData} />
+        <Status message={this.state.status.message} types={this.state.status.type} />
+        <PetCollection updateStatusCallback={this.updateStatus} />
       </div>
 
     );

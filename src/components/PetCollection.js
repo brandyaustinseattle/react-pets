@@ -2,18 +2,42 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Pet from './Pet';
 import NewPetForm from './NewPetForm';
+import Status from './Status';
+import axios from 'axios';
+
+const PETS_URL = 'https://petdibs.herokuapp.com/pets';
 
 class PetCollection extends Component {
   static propTypes = {
-    data: PropTypes.array.isRequired
+    updateStatusCallback: PropTypes.func.isRequired
   };
 
-  constructor(props) {
+  constructor() {
     super();
 
     this.state = {
-      pets: props.data
+      pets: []
     };
+  }
+
+  componentDidMount() {
+    console.log('in componentDidMount()');
+    axios.get(PETS_URL)
+      .then((response) => {
+        console.log('success');
+        console.log(response);
+
+        this.props.updateStatusCallback('successfully loaded pets', 'success');
+
+        const pets = response.data.slice(0,100);
+        this.setState({pets: pets});
+      })
+      .catch((error) => {
+        console.log('error');
+        console.log(error);
+
+        this.props.updateStatusCallback(error.message, 'error');
+      });
   }
 
   addPet = (pet) => {
@@ -32,7 +56,6 @@ class PetCollection extends Component {
 
       <section>
         {pets}
-
         <NewPetForm addPetCallback={this.addPet}/>
       </section>
     );
